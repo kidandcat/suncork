@@ -1,0 +1,71 @@
+{{ define "base" }}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-115571121-1"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-115571121-1');
+    </script>
+    <meta name="google-site-verification" content="nYirbkKY3p2doupWp-si-lCOYaI0SOZFP1kR_Dw6ksg" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cork accesory sstore, natural handmade cork bags, pendants, bracelets...">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{block "title" .}} {{end}}</title>
+    <!-- AnimeJS -->
+    <script src="/public/anime.min.js"></script>
+    <!-- UIkit-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/css/uikit.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit-icons.min.js"></script>
+    <!-- Stripe -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <!-- FONT -->
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="/public/my.css">
+    <style>
+        {{if eq .env "dev"}}
+        body {
+            border-top: 5px solid rgba(255, 0, 0, 0.7) !important;
+        }
+        {{end}}
+    </style>
+</head>
+
+<body>
+    {{ template "navbar.html" . }} {{if .info}}
+    <div uk-alert class="uk-alert-success" duration="5">{{.info}}
+        <a class="uk-alert-close" uk-close></a>
+    </div>
+    {{end}} {{if .error}}
+    <div uk-alert class="uk-alert-danger" duration="5">{{.error}}
+        <a class="uk-alert-close" uk-close></a>
+    </div>
+    {{end}}
+    <div id="content" class="uk-section" uk-height-viewport="offset-top: true; offset-bottom: true">
+        <div class="uk-container">{{template "content" .}}</div>
+    </div>
+    {{ template "footer.html" . }}
+    <script>
+        if(!window.localStorage.getItem("cookie_message")){
+            UIkit.notification({ 
+                message: 'Utilizamos cookies propias y de terceros para mejorar nuestros servicios y mostrarle publicidad relacionada con sus preferencias mediante el análisis de sus hábitos de navegación. Si continua navegando, consideramos que acepta su uso. Puede cambiar la configuración u obtener más información <a href="/cookies">aquí</a>.',
+                pos: 'bottom-left',
+                timeout: 5000
+            });
+            setTimeout(function(){
+                window.localStorage.setItem("cookie_message", "done")
+            }, 5000)
+        }
+        console.log("environment {{.env}}");
+    </script>
+</body>
+
+</html>
+{{ end }}

@@ -1,0 +1,20 @@
+{
+  "ShippingOptions": [
+    {
+      "id": "2",
+      "lang": "es",
+      "oneLine": "5€ Entrega a domicilio (Llega en 3-6 días)",
+      "label": "Entrega a domicilio",
+      "deliverTime": "Llega en 3-6 días",
+      "amount": 500
+    },
+    {
+      "id": "3",
+      "lang": "en",
+      "oneLine": "12€ Home delivery (Arrives in 7-12 days)",
+      "label": "Home delivery",
+      "deliverTime": "Arrives in 7-12 days",
+      "amount": 1200
+    }
+  ]
+}

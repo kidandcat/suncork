@@ -1,0 +1,262 @@
+{{define "title"}}SUNCORK | Cart{{end}}
+{{define "content"}}
+{{if .products}}
+<div class="uk-margin-large">
+    <table class="uk-table uk-width-1-2 uk-container uk-table-hover uk-table-divider uk-overflow-auto">
+        <thead>
+            <tr>
+                <th>{{$.t.name}}</th>
+                <th>{{$.t.option}}</th>
+                <th>{{$.t.price}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .products}}
+            <tr class="uk-animation-slide-top-small">
+                {{if eq $.lang "es"}}
+                <td onclick="window.location.href = '/product?id={{.Product.ID}}'" style="cursor: pointer">{{.Product.NameEs}}</td>
+                <td onclick="window.location.href = '/product?id={{.Product.ID}}'" style="cursor: pointer">
+                    {{range .Options}}
+                    {{.Value}}
+                    {{end}}
+                </td>
+                {{else}}
+                <td onclick="window.location.href = '/product?id={{.Product.ID}}'" style="cursor: pointer">{{.Product.NameEn}}</td>
+                <td onclick="window.location.href = '/product?id={{.Product.ID}}'" style="cursor: pointer">
+                    {{range .Options}}
+                    {{.Value}}
+                    {{end}}
+                </td>
+                {{end}}
+                <td><script>document.write({{.Product.Price}} / 100)</script>€</td>
+                <td onclick="window.location.href = '/product/remove?id={{.Product.ID}}'"><span uk-icon="close" style="cursor: pointer"></td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</div>
+
+<form action="/buy" id="payment-form" method="POST">
+    <fieldset class="uk-fieldset uk-width-1-2 uk-container">
+        <div class="uk-margin">
+            <div id="payment-request-button">
+                <!-- A Stripe Element will be inserted here. -->
+            </div>
+        </div>
+        <div id="paymentSeparator" class="uk-margin-large">
+            <hr class="uk-divider-icon">
+        </div>
+        <div class="uk-margin">
+            <input name="payerName" class="uk-input" type="text" placeholder="Nombre completo" required>
+        </div>
+        <div class="uk-margin">
+            <select class="uk-input" name="shippingOptionId">
+                {{range $.config.ShippingOptions}}
+                    {{if eq $.lang .Lang}}
+                    <option value="{{.ID}}">{{.OneLine}}</option>
+                    {{end}}
+                {{end}}
+            </select>
+        </div>
+        <div class="uk-margin uk-child-width-expand@s uk-text-center" uk-grid>
+            <div>
+                <input name="payerEmail" class="uk-input" type="email" placeholder="Email" required>
+            </div>
+            <div>
+                <input name="payerPhone" class="uk-input" type="tel" placeholder="Telefono" required>
+            </div>
+        </div>
+        <div class="uk-margin">
+            <input name="address" class="uk-input" type="text" placeholder="Direccion" required>
+        </div>
+        <div class="uk-margin uk-child-width-expand@s uk-text-center" uk-grid>
+            <div>
+                <input name="country" class="uk-input" type="text" placeholder="Pais" required>
+            </div>
+            <div>
+                <input name="city" class="uk-input" type="text" placeholder="Ciudad" required>
+            </div>
+            <div>
+                <input name="postalCode" class="uk-input" type="text" placeholder="Codigo postal" required>
+            </div>
+        </div>
+        <div class="uk-margin" style="border:  1px solid #e5e5e5; padding: 0.8rem;">
+            <div id="card-number">
+                <!-- A Stripe Element will be inserted here. -->
+            </div>
+            <!-- Used to display Element errors. -->
+            <div id="card-errors" role="alert"></div>
+        </div>
+        <div class="uk-margin uk-child-width-expand@s uk-text-center" uk-grid>
+            <div class="uk-width-1-5@m" id="card-expiry" style="border:  1px solid #e5e5e5; padding: 0.8rem; margin-left: 40px">
+                <!-- A Stripe Element will be inserted here. -->
+            </div>
+            <div class="uk-width-1-5@m" id="card-cvc" style="border:  1px solid #e5e5e5; padding: 0.8rem; margin-left: 40px">
+                <!-- A Stripe Element will be inserted here. -->
+            </div>
+        </div>
+        <div class="uk-margin">
+            <button type="submit" class="uk-align-center uk-button uk-button-default">{{$.t.pay}}</button>
+        </div>
+    </fieldset>
+</form>
+
+<script>
+    var stripe;
+    if(window.location.host == 'suncork.net'){
+        stripe = Stripe('pk_test_7nHZ8JCZIqRvjiHddGDkAi9G');
+    }else{
+        stripe = Stripe('pk_test_7nHZ8JCZIqRvjiHddGDkAi9G');
+    }
+    (function () {
+        'use strict';
+
+
+        var elements = stripe.elements({
+            locale: 'auto'
+        });
+
+        // Create an instance of the card Element.
+        var cardNumber = elements.create('cardNumber');
+        var cardExpiry = elements.create('cardExpiry');
+        var cardCvc = elements.create('cardCvc');
+
+        cardNumber.addEventListener('change', function (event) {
+            var displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+
+        // Add an instance of the card Element into the `card-element` <div>.
+        cardNumber.mount('#card-number');
+        cardExpiry.mount('#card-expiry');
+        cardCvc.mount('#card-cvc');
+
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            stripe.createToken(cardNumber).then(function (result) {
+                if (result.error) {
+                    // Inform the customer that there was an error.
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = result.error.message;
+                } else {
+                    // Send the token to your server.
+                    stripeTokenHandler(result.token);
+                }
+            });
+        });
+
+        function stripeTokenHandler(token) {
+            // Insert the token ID into the form so it gets submitted to the server
+            var form = document.getElementById('payment-form');
+            var hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'token');
+            hiddenInput.setAttribute('value', token.id);
+            form.appendChild(hiddenInput);
+
+            // Submit the form
+            form.submit();
+        }
+    })();
+
+    var paymentRequest = stripe.paymentRequest({
+        country: 'ES',
+        currency: 'eur',
+        total: {
+            label: 'Product names',
+            amount: 0,
+        },
+        requestShipping: true,
+        requestPayerPhone: true,
+        requestPayerEmail: true,
+        requestPayerName: true,
+        shippingOptions: [
+                {{range $.config.ShippingOptions}}
+                    {{if eq $.lang .Lang}}
+                    {
+                        "id": "{{.ID}}",
+                        "label": "{{.Label}}",
+                        "detail": "{{.DeliverTime}}",
+                        "amount": {{.Amount}}
+                    },
+                    {{end}}
+                {{end}}
+            ]
+        }); 
+
+    var elements = stripe.elements();
+    var prButton = elements.create('paymentRequestButton', {
+        paymentRequest: paymentRequest,
+        style: {
+            paymentRequestButton: {
+                type: 'buy',
+                theme: 'light-outline',
+            },
+        },
+    });
+
+    paymentRequest.canMakePayment().then(function (result) {
+        console.log("canMakePayment", result);
+        if (result) {
+            prButton.mount('#payment-request-button');
+        } else {
+            console.log("Error: Payment Request API not available");
+            document.getElementById('payment-request-button').style.display = 'none';
+            document.getElementById('paymentSeparator').style.display = 'none';
+        }
+    });
+
+    paymentRequest.on('token', function (ev) {
+        var data = {
+            address: ev.shippingAddress.addressLine[0],
+            city: ev.shippingAddress.city,
+            country: ev.shippingAddress.country,
+            postalCode: ev.shippingAddress.postalCode,
+            shippingOptionId: ev.shippingOption.id,
+            token: ev.token.id,
+            created: ev.token.created,
+            clientIp: ev.token.client_ip,
+            payerEmail: ev.payerEmail,
+            payerName: ev.payerName,
+            payerPhone: ev.payerPhone,
+        }
+        var urlEncodedData = "";
+        var urlEncodedDataPairs = [];
+        var name;
+        // Turn the data object into an array of URL-encoded key/value pairs.
+        for(name in data) {
+            urlEncodedDataPairs.push(encodeURIComponent(name) + '=' + encodeURIComponent(data[name]));
+        }
+
+        // Combine the pairs into a single string and replace all %-encoded spaces to 
+        // the '+' character; matches the behaviour of browser form submissions.
+        urlEncodedData = urlEncodedDataPairs.join('&').replace(/%20/g, '+');
+        fetch('/buy', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            },
+            body: urlEncodedData,
+        }).then(function (response) {
+            if (response.ok) {
+                ev.complete('success');
+                window.location.href = "/";
+            } else {
+                ev.complete('fail');
+            }
+        });
+    });
+</script>
+{{else}}
+<div class="uk-margin-large uk-container uk-text-center">
+    <h4>{{.t.emptyCart}}</h4>
+</div>
+{{end}}
+{{end}}

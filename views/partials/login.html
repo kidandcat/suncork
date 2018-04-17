@@ -1,0 +1,17 @@
+{{define "title"}}ADMIN{{end}} {{define "content"}}
+<div>
+    <form action="/shestakova/loginform" method="post">
+        <fieldset class="uk-fieldset">
+            <div class="uk-margin">
+                <input class="uk-input" type="text" placeholder="User" name="User" autofocus>
+            </div>
+            <div class="uk-margin">
+                <input class="uk-input" type="password" placeholder="Pass" name="Pass">
+            </div>
+            <div class="uk-margin">
+                <button type="submit" class="uk-button uk-button-default">Login</button>
+            </div>
+        </fieldset>
+    </form>
+</div>
+{{end}}

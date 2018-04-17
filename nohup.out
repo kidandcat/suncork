@@ -1,0 +1,2 @@
+./cockroach-linux start --insecure --host=127.0.0.1 --cache=20%
+task: Failed to run task "database": fork/exec ./cockroach-linux: exec format error

@@ -1,0 +1,80 @@
+{{define "title"}}SUNCORK | Product{{end}} {{define "content"}}
+<div class="uk-container uk-text-center uk-margin-large">
+    {{if eq $.lang "en"}}
+    <h2>{{.product.NameEn}}</h2>
+    {{else}}
+    <h2>{{.product.NameEs}}</h2>
+    {{end}}
+</div>
+<div class="uk-panel" uk-grid>
+    <div class="uk-width-1-2@m uk-width-1-1@s">
+        <div uk-lightbox class="each-image-container">
+            <a href="{{index .product.Image 0}}">
+                <img src="{{index .product.Image 0}}" class="big-product-image" alt="">
+            </a>
+        </div>
+        <div class="product-images-container">
+            {{range $index, $image := .product.Image}} {{if eq $index 0}} {{else}}
+            <div uk-lightbox class="each-image-container">
+                <a href="{{.}}">
+                    <img src="{{.}}" class="small-product-image" alt="">
+                </a>
+            </div>
+            {{end}} {{end}}
+        </div>
+    </div>
+    <div class="uk-margin uk-width-1-2@m uk-width-1-1@s uk-flex uk-flex-column">
+        <div class="uk-flex-2">
+            {{if eq $.lang "en"}}
+            <pre style="font-size: 1rem; border: none; white-space: pre-wrap; color: black">{{.product.DescriptionEn}}</pre> {{else}}
+            <pre style="font-size: 1rem; border: none; white-space: pre-wrap; color: black">{{.product.DescriptionEs}}</pre> {{end}}
+        </div>
+        <div class="uk-flex-6">
+            {{range $i, $v := .product.Options}} {{if eq $.lang $v.Lang}}
+            <div class="uk-margin options-container">
+                <label class="options-label">{{$v.Name}}</label>
+                <select class="uk-select uk-width-1-2 choices" data-index="{{$i}}" onchange="optionChanged(this)" data-name="{{$v.Name}}">
+                    {{range $ii, $vv := .Choices}} {{if lt (index $v.Stock $ii) 1}}
+                    <option value="{{.}}" data-stock="{{index $v.Stock $ii}}" disabled>{{.}}</option>
+                    {{else}}
+                    <option value="{{.}}" data-stock="{{index $v.Stock $ii}}">{{.}}</option>
+                    {{end}} {{end}}
+                </select>
+                <span class="options-stock" id="stockField{{$i}}"></span>
+            </div>
+            {{end}} {{end}}
+        </div>
+        <div style="font-size: 1rem; color: black" class="uk-margin uk-flex-8">
+            {{.t.price}}:
+            <script>document.write({{.product.Price }} / 100)</script>€
+        </div>
+        <a class="uk-button uk-button-default uk-flex-8" onclick="addToCart()">{{.t.addToCart}}</a>
+    </div>
+</div>
+
+<script>
+    function addToCart() {
+            var es = document.querySelectorAll(".choices");
+            var query = ""
+            for (i = 0; i < es.length; i++) {
+                var strUser = es[i].options[es[i].selectedIndex].value;
+                query += "&optName=" + encodeURIComponent(es[i].dataset.name);
+                query += "&optVal=" + encodeURIComponent(strUser);
+            }
+            window.location.href = "/product/cart?id={{.product.ID}}" + query;
+        }
+
+    {{if $.admin}}
+    function optionChanged(select) {
+        if(select.options[select.selectedIndex].dataset.stock == 0){
+            document.querySelector("#stockField" + select.dataset.index).innerHTML = "out of stock";
+        }
+    }
+
+    var es = document.querySelectorAll(".choices");
+    for (i = 0; i < es.length; i++) {
+        optionChanged(es[i])
+    }
+    {{end}}
+
+</script> {{end}}

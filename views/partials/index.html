@@ -1,0 +1,43 @@
+{{define "title"}}SUNCORK - Cork Oak Store{{end}} {{define "content"}}
+<div>
+    <div uk-grid class="uk-grid-medium uk-grid-match uk-flex-center">
+        {{range .products}}
+        <div>
+            <div>
+                {{if $.admin}}
+                <a href="/product/delete?id={{.ID}}">X</a>
+                {{end}}
+                <a href="/product?id={{.ID}}">
+                    <div class="flip-container">
+                        <div class="uk-card uk-card-default uk-card-hover uk-card-body" style="cursor: pointer; padding: 0px; margin-top: 20px">
+                            <div class="flipper">
+                                <div class="front">
+                                    <img src="{{index .Image 0}}" style="width: 300px; height: 300px"></img>
+                                </div>
+                                <div class="back">
+                                    {{if eq $.lang "en"}}
+                                    <div class="name">
+                                        {{.NameEn}}
+                                    </div>
+                                    <div class="description">
+                                        <script>document.write({{.Price }} / 100)</script>€
+                                    </div>
+                                    {{else}}
+                                    <div class="name">
+                                        {{.NameEs}}
+                                    </div>
+                                    <div class="description">
+                                        <script>document.write({{.Price }} / 100)</script>€
+                                    </div>
+                                    {{end}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        {{end}}
+    </div>
+</div>
+{{end}}

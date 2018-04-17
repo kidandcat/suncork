@@ -1,0 +1,16 @@
+{{define "title"}}ADMIN | Translations{{end}} {{define "content"}}
+<div class="uk-container uk-width-1-2">
+    <form action="/shestakova/translations/new" method="post">
+        <h3 class="uk-text-center">{{.lang}}</h3>
+        <fieldset class="uk-fieldset">
+            {{range $key, $value := .t}}
+            <div class="uk-margin">
+                <label for="{{$key}}" style="margin-left: 50%; transform: translateX(-50%); display: inline-block;">{{$key}}</label>
+                <input type="text" name="{{$key}}" value="{{$value}}" class="uk-input">
+            </div>
+            {{end}}
+            <button type="submit" class="uk-button uk-button-default">Actualizar</button>
+        </fieldset>
+    </form>
+</div>
+{{end}}

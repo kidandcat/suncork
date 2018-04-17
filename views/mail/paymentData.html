@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        td {
+            border: 1px solid gray;
+        }
+
+        tr {
+            border: 2px solid gray;
+        }
+    </style>
+</head>
+
+<body>
+    <table width="640" cellspacing="0" cellpadding="0" border="0" align="center" style="max-width:640px; width:100%;" bgcolor="#FFFFFF">
+        <tr>
+            <td align="center" valign="top" style="padding:10px;">
+
+                <table width="600" cellspacing="0" cellpadding="0" border="0" align="center" style="max-width:600px; width:100%;">
+                    {{range .Products}}
+                    <tr>
+                        <td align="center" valign="top" style="padding:10px;">
+                            Product
+                        </td>
+                        <td align="center" valign="top" style="padding:10px;">
+                            {{.Product.NameEs}}
+                        </td>
+                        <td align="center" valign="top" style="padding:10px;">
+                            Options
+                        </td>
+                        <td align="center" valign="top" style="padding:10px;">
+                            {{range .Options}}
+                            {{.Name}} {{.Value}} 
+                            {{end}}
+                        </td>
+                    </tr>
+                    {{end}}
+                    <tr>
+                        <td align="center" valign="top" style="padding:10px;">
+                            Shipping Option
+                        </td>
+                        <td align="center" valign="top" style="padding:10px;">
+                            {{.ShippingOption.Label}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" valign="top" style="padding:10px;">
+                            Shipping Price
+                        </td>
+                        <td align="center" valign="top" style="padding:10px;">
+                            {{.ShippingOption.Amount}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" valign="top" style="padding:10px;">
+                            Shipping Address
+                        </td>
+                        <td align="center" valign="top" style="padding:10px;">
+                            {{.ShippingAddress.AddressLine}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" valign="top" style="padding:10px;">
+                            Postal Code
+                        </td>
+                        <td align="center" valign="top" style="padding:10px;">
+                            {{.ShippingAddress.PostalCode}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" valign="top" style="padding:10px;">
+                            City
+                        </td>
+                        <td align="center" valign="top" style="padding:10px;">
+                            {{.ShippingAddress.City}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" valign="top" style="padding:10px;">
+                            Country
+                        </td>
+                        <td align="center" valign="top" style="padding:10px;">
+                            {{.ShippingAddress.Country}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" valign="top" style="padding:10px;">
+                            Payer Email
+                        </td>
+                        <td align="center" valign="top" style="padding:10px;">
+                            {{.PayerEmail}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" valign="top" style="padding:10px;">
+                            Payer Phone
+                        </td>
+                        <td align="center" valign="top" style="padding:10px;">
+                            {{.PayerPhone}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" valign="top" style="padding:10px;">
+                            Payer Name
+                        </td>
+                        <td align="center" valign="top" style="padding:10px;">
+                            {{.PayerName}}
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

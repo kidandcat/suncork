@@ -1,0 +1,38 @@
+run:
+  deps: [build]
+  cmds:
+    - ./suncork
+build:
+  cmds:
+    - if [ $( ls suncork ) ]; then rm suncork; fi
+    - go get ./... || echo Nothing to get
+    - go build -o suncork *.go
+database:
+  cmds:
+    - ./cockroach-linux start --insecure --host=127.0.0.1 --cache=20%
+initDatabaseLinux:
+  cmds:
+    - ./cockroach-linux sql --insecure -e 'CREATE DATABASE suncork'
+    - ./cockroach-linux sql --insecure -e 'GRANT ALL ON DATABASE suncork TO jairo'
+initDatabaseMac:
+  cmds:
+    - ./cockroach-mac sql --insecure -e 'CREATE DATABASE suncork'
+    - ./cockroach-mac sql --insecure -e 'GRANT ALL ON DATABASE suncork TO jairo'
+hook:
+  deps: [buildHook]
+  cmds:
+    - ./hook
+buildHook:
+  cmds:
+    - if [ $( ls hook ) ]; then rm hook; fi
+    - go build -o hook git-hook/git-hook.go
+react:
+  deps: [image-uploader, options-creator]
+image-uploader:
+  dir: components/image-uploader
+  cmds:
+    - npm start
+options-creator:
+  dir: components/options-creator
+  cmds:
+    - npm start

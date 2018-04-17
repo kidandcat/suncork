@@ -1,0 +1,64 @@
+{{define "title"}}ADMIN{{end}} {{define "content"}}
+<div>
+    <form action="/product/new" id="new" method="post" enctype="multipart/form-data">
+        <fieldset class="uk-fieldset">
+            <div class="uk-margin">
+                <input type="text" placeholder="ID" name="ID" value="{{.product.ID}}">
+            </div>
+            <div class="uk-margin">
+                <input class="uk-input uk-width-1-2" type="text" placeholder="{{.t.nameEn}}" name="NameEn" value="{{.product.NameEn}}" autofocus>
+            </div>
+            <div class="uk-margin">
+                <input class="uk-input uk-width-1-2" type="text" placeholder="{{.t.nameEs}}" name="NameEs" value="{{.product.NameEs}}">
+            </div>
+            <div class="uk-margin">
+                <label for="DescriptionEn">{{.t.descriptionEn}}</label>
+                <textarea name="DescriptionEn" cols="30" rows="10" class="uk-textarea">
+{{.product.DescriptionEn}}
+                </textarea>
+            </div>
+            <div class="uk-margin">
+                <label for="DescriptionEs">{{.t.descriptionEs}}</label>
+                <textarea name="DescriptionEs" cols="30" rows="10" class="uk-textarea">
+{{.product.DescriptionEs}}
+                </textarea>
+            </div>
+            <div class="uk-margin">
+                <input id="price" type="number" name="Price" step=".01" placeholder="{{.t.price}}" class="uk-input uk-width-1-6">
+            </div>
+            <div class="uk-margin">
+                <div id="options-creator"></div>
+            </div>
+            <div class="uk-margin">
+                <div id="image-uploader"></div>
+            </div>
+            <div class="uk-margin">
+                <button type="submit" class="uk-button uk-button-default">{{.t.create}}</button>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+<div>
+    <div uk-grid class="uk-grid-small uk-grid-match uk-flex-center">
+        {{range .products}}
+        <a href="/product/delete?id={{.ID}}">X</a>
+        <div>
+            <div>
+                <a href="/shestakova?edit={{.ID}}">
+                    <div class="uk-card uk-card-default uk-card-hover uk-card-body" style="max-width: 250px; cursor: pointer">
+                        <img src="{{index .Image 0}}"></img>
+                    </div>
+                </a>
+            </div>
+        </div>
+        {{end}}
+    </div>
+</div>
+
+<script>
+    document.querySelector('#price').value = {{.product.Price }} / 100
+</script>
+
+<script src="/public/image-uploader.js"></script>
+<script src="/public/options-creator.js"></script> {{end}}

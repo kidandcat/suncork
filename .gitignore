@@ -1,0 +1,8 @@
+products
+cockroach-data
+components/image-uploader/node_modules
+components/image-uploader/.cache
+components/options-creator/node_modules
+components/options-creator/.cache
+locales
+nohup.out
